@@ -1,10 +1,10 @@
-# Possible NativeArray<byte> bug
+# Possible NativeArray\<byte\> bug
 
-Writing to a subarray of a NativeArray<byte> in certain positions can fail.
+Writing to a subarray of a NativeArray\<byte\> in certain positions can fail.
 
 ## Approach
 
-We take a subarray of length 1 from a NativeArray<byte>, pass that subarray to a job and try to write the position zero.
+We take a subarray of length 1 from a NativeArray\<byte\>, pass that subarray to a job and try to write the position zero.
 
 ## Result
 
