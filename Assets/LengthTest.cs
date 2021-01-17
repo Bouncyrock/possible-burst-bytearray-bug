@@ -3,6 +3,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
+// Confirmed the bug in Burst version 1.4.1, 1.4.3, and 1.5.0-pre.3
+
 public class LengthTest : MonoBehaviour
 {
     NativeArray<byte> _testArray;
@@ -21,13 +23,26 @@ public class LengthTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var hmm = _testArray.GetSubArray(59, 1);
-        Debug.Log($"Here the length of hmm is {hmm.Length}");
-        Foo.Create(hmm).Schedule().Complete();
-        Debug.Log("Will never reach here");
+        NativeArray<byte> hmm;
+
+        hmm = _testArray.GetSubArray(1, 1);
+        Foo.Create(hmm).Run();
+        Debug.Log("Starting at index 1 works");
+        
+        hmm = _testArray.GetSubArray(2, 1);
+        Foo.Create(hmm).Run();
+        Debug.Log("Starting at index 2 works");
+
+        hmm = _testArray.GetSubArray(3, 1);
+        Foo.Create(hmm).Run();
+        Debug.Log("Starting at index 3 fails");
+        
+        hmm = _testArray.GetSubArray(0, 1);
+        Foo.Create(hmm).Run();
+        Debug.Log("Starting at index 0 fails (sometimes)");
     }
 
-    [BurstCompile]
+    [BurstCompile(CompileSynchronously = true)]
     struct Foo : IJob
     {
         NativeArray<byte> _bytes;
@@ -42,7 +57,7 @@ public class LengthTest : MonoBehaviour
 
         public void Execute()
         {
-            _bytes[0] = 1;
+            _bytes[0] = 1; // will give an IndexOutOfRangeException here 
         }
     }
 }
