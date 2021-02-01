@@ -2,6 +2,8 @@
 
 Writing to a subarray of a NativeArray\<byte\> in certain positions can fail.
 
+> [EDIT] Turns out it's a known issue: https://issuetracker.unity3d.com/product/unity/issues/guid/1294627
+
 ## Approach
 
 We take a subarray of length 1 from a NativeArray\<byte\>, pass that subarray to a job and try to write the position zero.
